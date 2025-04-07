@@ -2,8 +2,6 @@
 
 This project is an **ETL (Extract, Transform, Load)** pipeline designed to interact with the **Hevy API**, fetch workout and exercise data, process it, and store it in **CSV** and **Parquet** formats for future analysis.
 
-🔗 Visit [GPTOnline.ai](https://gptonline.ai/pt/) for more projects like this!
-
 ---
 
 ## ✨ Features
@@ -18,7 +16,7 @@ This project is an **ETL (Extract, Transform, Load)** pipeline designed to inter
 ## ⚙️ Requirements
 
 - Python 3.9+
-- A valid Hevy API Key (`HEVY_API_KEY`)
+- A valid [Hevy API](https://api.hevyapp.com/docs/) Key
 - Python packages:
   - `pandas==2.2.3`
   - `python-dotenv==1.1.0`
@@ -31,7 +29,7 @@ This project is an **ETL (Extract, Transform, Load)** pipeline designed to inter
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-repo/hevy-workout-etl-pipeline.git
+git clone https://github.com/J0BS013/hevy-workout-etl-pipeline.git
 cd hevy-workout-etl-pipeline
 ```
 
