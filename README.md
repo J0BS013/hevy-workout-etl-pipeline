@@ -1,133 +1,203 @@
-# 🏋️‍♂️ Hevy Workout ETL Pipeline
+# Hevy Workout ETL Pipeline
 
-This project is an **ETL (Extract, Transform, Load)** pipeline designed to interact with the **Hevy API**, fetch workout and exercise data, process it, and store it in **CSV** and **Parquet** formats for future analysis.
-
----
-
-## ✨ Features
-
-- 🔄 Extracts workout and exercise data from the Hevy API
-- 💾 Saves the data in **CSV** and **Parquet** formats
-- 📂 Data structured into layers: **Bronze**, **Silver**, and **Gold**
-- 🧱 Modular design for easy maintenance and future scalability
+An end-to-end data engineering project that extracts workout data from the **Hevy API**, processes it through a **Medallion Architecture** (Bronze → Silver → Gold → Analytics), and delivers insights via an interactive **Streamlit dashboard** with statistical analysis.
 
 ---
 
-## ⚙️ Requirements
+## Architecture
+
+```
+Hevy API
+   │
+   ▼
+Bronze Layer      Raw API data with full pagination (Parquet)
+   │
+   ▼
+Silver Layer      Flattened: one row per set, typed columns (Parquet)
+   │
+   ▼
+Gold Layer        Aggregated tables ready for visualization (Parquet)
+   │
+   ▼
+Analytics Layer   Statistical models: OLS regression, PRs, consistency (Parquet)
+   │
+   ▼
+Streamlit App     Interactive dashboard with 4 tabs
+```
+
+---
+
+## Features
+
+**Pipeline**
+- Full pagination support — fetches all API pages automatically
+- Medallion Architecture with clear separation of concerns
+- Parquet-only storage for performance and type safety
+- Structured logging across all pipeline stages
+
+**Analytics (scipy)**
+- Linear regression on strength progression per exercise (slope, R², p-value)
+- Statistical significance testing (p < 0.05 threshold)
+- Volume trend analysis with OLS regression line
+- Personal Record detection
+- Consistency score based on coefficient of variation
+
+**Streamlit Dashboard**
+- Period filters: Last 3 months / 6 months / Last year / All time / Custom
+- **Overview** — KPIs, workout frequency, volume per session
+- **Volume** — Weekly stacked bar by muscle group + radar chart distribution
+- **Progression** — Weight progression + session volume per exercise
+- **Analytics** — Regression insights, PR timeline, trend visualization
+
+**Data Quality**
+- Automated checks between every pipeline layer (Bronze → Silver → Gold)
+- Validates schema, nulls, negative values and duplicate keys
+- Raises `DataQualityError` with a clear message before bad data propagates
+
+**Tests**
+- 44 unit tests with `pytest`, zero external dependencies (no API calls)
+- Shared fixtures in `conftest.py` covering raw API payloads → Silver → Gold
+- Full coverage of transform, aggregation and statistical functions
+
+---
+
+## Project Structure
+
+```
+hevy-workout-etl-pipeline/
+│
+├── pipeline/
+│   ├── bronze/
+│   │   └── extract.py          # Paginated API extraction
+│   ├── silver/
+│   │   └── transform.py        # Flatten workouts → one row per set
+│   ├── gold/
+│   │   └── aggregate.py        # Workout summary, weekly volume, progression
+│   └── analytics/
+│       └── stats.py            # OLS regression, PRs, consistency score
+│
+├── utils/
+│   └── storage.py              # save_to_parquet
+│
+├── data/
+│   ├── bronze/                 # Raw API records
+│   ├── silver/                 # Cleaned and flattened
+│   ├── gold/                   # Aggregated analytics tables
+│   └── analytics/              # Statistical model outputs
+│
+├── pipeline/
+│   └── quality/
+│       └── checks.py           # Data quality checks per layer
+│
+├── tests/
+│   ├── conftest.py             # Shared fixtures (raw → silver → gold)
+│   ├── test_transform.py       # 14 tests — Silver layer
+│   ├── test_aggregate.py       # 13 tests — Gold layer
+│   └── test_stats.py           # 17 tests — Analytics layer
+│
+├── config.py                   # API config and path definitions
+├── main.py                     # Pipeline orchestrator
+├── app.py                      # Streamlit dashboard
+└── requirements.txt
+```
+
+---
+
+## Gold Tables
+
+| Table | Description |
+|---|---|
+| `workout_summary` | Volume, sets and exercises per workout |
+| `weekly_volume` | Volume per ISO week per muscle group |
+| `exercise_progression` | Max weight and volume per exercise per session |
+| `muscle_group_summary` | Aggregated volume per primary muscle group |
+
+## Analytics Tables
+
+| Table | Description |
+|---|---|
+| `exercise_stats` | OLS slope (kg/week), R², p-value and trend per exercise |
+| `personal_records` | Every session where a new PR was set |
+| `volume_trend` | Weekly volume regression with significance test |
+| `consistency` | CV-based consistency score and longest streak |
+
+---
+
+## Requirements
 
 - Python 3.9+
-- A valid [Hevy API](https://api.hevyapp.com/docs/) Key
-- Python packages:
-  - `pandas==2.2.3`
-  - `python-dotenv==1.1.0`
-  - `requests==2.32.3`
+- Hevy API Key — get yours at [hevyapp.com](https://www.hevyapp.com/)
 
 ---
 
-## 📦 Installation
+## Setup
 
-### 1. Clone the repository
-
+**1. Clone the repository**
 ```bash
 git clone https://github.com/J0BS013/hevy-workout-etl-pipeline.git
 cd hevy-workout-etl-pipeline
 ```
 
-### 2. Install dependencies
-
+**2. Install dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Set environment variables
+**3. Configure API key**
 
-Create a `.env` file in the root directory with the following content:
-
+Create a `.env` file in the root directory:
 ```env
 HEVY_API_KEY=your_api_key_here
 ```
 
 ---
 
-## 🔌 Test API Connection
+## How to Run
 
-Run the config file to ensure the API is accessible:
-
-```bash
-python config.py
-```
-
-✅ If successful, you'll see a success message with the API response.
-
----
-
-## ▶️ How to Use
-
-### Run the Bronze Pipeline
-
-The **Bronze** layer fetches raw data from the API and stores it in `data/bronze`.
-
+**Run the full pipeline**
 ```bash
 python main.py
 ```
 
-Expected output:
+**Launch the dashboard**
+```bash
+streamlit run app.py
+```
 
+The dashboard opens automatically at `http://localhost:8501`.
+
+> Run `main.py` before `app.py` — the dashboard reads the Parquet files generated by the pipeline.
+
+**Run the test suite**
+```bash
+pytest tests/ -v
 ```
-🔄 Starting Bronze Pipeline
-💾 CSV saved in: data/bronze/workouts.csv
-💾 Parquet saved in: data/bronze/workouts.parquet
-💾 CSV saved in: data/bronze/exercise_templates.csv
-💾 Parquet saved in: data/bronze/exercise_templates.parquet
-✅ Bronze Pipeline completed successfully
-```
+
+44 tests, no API calls required.
 
 ---
 
-## 📁 Project Structure
+## Tech Stack
 
-```
-hevy-workout-etl-pipeline/
-│
-├── config.py            # API and path configuration
-├── main.py              # Main script to run the pipeline
-├── utils/               # Utility functions like save_to_csv/parquet
-├── bronze/              # Bronze layer: raw data
-│   └── bronze_layer.py
-├── data/
-│   ├── bronze/          # Raw data (CSV and Parquet)
-│   ├── silver/          # Transformed data (to be developed)
-│   └── gold/            # Final analytics data (to be developed)
-├── .env                 # Contains the API Key
-└── requirements.txt     # Project dependencies
-```
+| Layer | Technology |
+|---|---|
+| Data extraction | `requests`, Hevy REST API |
+| Data processing | `pandas` |
+| Storage | `parquet` (via `pyarrow`) |
+| Statistical analysis | `scipy` (OLS regression, hypothesis testing) |
+| Visualization | `streamlit`, `plotly` |
+| Config management | `python-dotenv` |
+| Testing | `pytest` |
+| Data quality | Custom validation layer |
 
 ---
 
-## 📚 About the Hevy API
+## Status
 
-This project uses the following endpoints from the Hevy API:
-
-- `/workouts`
-- `/exercise_templates`
-
-Authentication header:
-
-```python
-headers = {
-    'api-key': HEVY_API_KEY,
-    'accept': 'application/json'
-}
-```
-
-More details at the [official Hevy documentation](https://www.hevyapp.com/).
-
----
-
-## 🏗️ Project Status
-
-🔨 **In Progress**
-
-- ✅ Bronze Layer: Implemented
-- 🧼 Silver Layer: To be developed (data cleaning and transformation)
-- 📊 Gold Layer: To be developed (aggregations and analytics)
+- Bronze Layer — Implemented
+- Silver Layer — Implemented
+- Gold Layer — Implemented
+- Analytics Layer — Implemented
+- Data Quality Checks — Implemented
+- Streamlit Dashboard — Implemented
+- Test Suite (44 tests) — Implemented
