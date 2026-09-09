@@ -194,13 +194,3 @@ Each required API page has a 15-second timeout. Only transient failures (HTTP 42
 | Data quality | Custom validation layer |
 
 ---
-
-## Status
-
-- Bronze Layer — Implemented
-- Silver Layer — Implemented
-- Gold Layer — Implemented
-- Analytics Layer — Implemented
-- Data Quality Checks — Implemented
-- Streamlit Dashboard — Implemented
-- Test Suite (56 tests) — Implemented
