@@ -55,7 +55,7 @@ Streamlit App     Interactive dashboard with 4 tabs
 - Raises `DataQualityError` with a clear message before bad data propagates
 
 **Tests**
-- 44 unit tests with `pytest`, zero external dependencies (no API calls)
+- 56 automated tests with `pytest`, zero external dependencies (no API calls)
 - Shared fixtures in `conftest.py` covering raw API payloads → Silver → Gold
 - Full coverage of transform, aggregation and statistical functions
 
@@ -73,8 +73,10 @@ hevy-workout-etl-pipeline/
 │   │   └── transform.py        # Flatten workouts → one row per set
 │   ├── gold/
 │   │   └── aggregate.py        # Workout summary, weekly volume, progression
-│   └── analytics/
-│       └── stats.py            # OLS regression, PRs, consistency score
+│   ├── analytics/
+│   │   └── stats.py            # OLS regression, PRs, consistency score
+│   └── quality/
+│       └── checks.py           # Data quality checks per layer
 │
 ├── utils/
 │   └── storage.py              # save_to_parquet
@@ -85,15 +87,12 @@ hevy-workout-etl-pipeline/
 │   ├── gold/                   # Aggregated analytics tables
 │   └── analytics/              # Statistical model outputs
 │
-├── pipeline/
-│   └── quality/
-│       └── checks.py           # Data quality checks per layer
-│
 ├── tests/
 │   ├── conftest.py             # Shared fixtures (raw → silver → gold)
-│   ├── test_transform.py       # 14 tests — Silver layer
-│   ├── test_aggregate.py       # 13 tests — Gold layer
-│   └── test_stats.py           # 17 tests — Analytics layer
+│   ├── test_extract.py         # retries, pagination and atomic writes
+│   ├── test_transform.py       # Silver-layer transforms
+│   ├── test_aggregate.py       # Gold-layer aggregations
+│   └── test_stats.py           # Analytics calculations
 │
 ├── config.py                   # API config and path definitions
 ├── main.py                     # Pipeline orchestrator
@@ -204,4 +203,4 @@ Each required API page has a 15-second timeout. Only transient failures (HTTP 42
 - Analytics Layer — Implemented
 - Data Quality Checks — Implemented
 - Streamlit Dashboard — Implemented
-- Test Suite (44 tests) — Implemented
+- Test Suite (56 tests) — Implemented
