@@ -174,6 +174,8 @@ pytest tests/ -v
 
 56 tests, no API calls required.
 
+GitHub Actions runs this API-free suite on pushes and pull requests.
+
 ### API failure and recovery behavior
 
 Each required API page has a 15-second timeout. Only transient failures (HTTP 429/5xx and request timeouts) are retried with exponential backoff; authentication and other non-recoverable errors fail immediately. Extraction returns data only after all advertised pages succeed, so partial data is never saved as a successful Bronze snapshot. Re-run `python main.py` after resolving the API issue; Parquet promotion is atomic, preserving the previous file if a write fails.
