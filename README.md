@@ -1,5 +1,9 @@
 # Hevy Workout ETL Pipeline
 
+![Hevy workout analytics dashboard](docs/assets/hevy-dashboard.png)
+
+The dashboard turns the pipeline outputs into workout-frequency, training-volume, exercise-progression, personal-record, and statistical-trend views. It reads the Gold and Analytics Parquet tables rather than calling the API directly.
+
 An end-to-end data engineering project that extracts workout data from the **Hevy API**, processes it through a **Medallion Architecture** (Bronze → Silver → Gold → Analytics), and delivers insights via an interactive **Streamlit dashboard** with statistical analysis.
 
 ---
