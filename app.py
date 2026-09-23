@@ -149,7 +149,7 @@ with tab1:
         color_discrete_sequence=["#636EFA"],
     )
     fig_freq.update_layout(showlegend=False)
-    st.plotly_chart(fig_freq, use_container_width=True)
+    st.plotly_chart(fig_freq, width="stretch")
 
     # Volume per workout
     fig_vol_workout = px.bar(
@@ -161,7 +161,7 @@ with tab1:
         labels={"workout_date": "Date", "total_volume_kg": "Volume (kg)", "workout_title": "Workout"},
         hover_data=["total_sets", "total_exercises", "workout_duration_minutes"],
     )
-    st.plotly_chart(fig_vol_workout, use_container_width=True)
+    st.plotly_chart(fig_vol_workout, width="stretch")
 
 
 # ── TAB 2: Volume ─────────────────────────────────────────────────────────────
@@ -183,7 +183,7 @@ with tab2:
                 "primary_muscle_group": "Muscle Group",
             },
         )
-        st.plotly_chart(fig_weekly, use_container_width=True)
+        st.plotly_chart(fig_weekly, width="stretch")
 
     with col_right:
         # Muscle distribution radar chart
@@ -228,14 +228,14 @@ with tab2:
             ),
             showlegend=False,
         )
-        st.plotly_chart(fig_radar, use_container_width=True)
+        st.plotly_chart(fig_radar, width="stretch")
 
     # Muscle group summary table
     st.subheader("Muscle Group Summary")
     display_df = muscle_group_summary.copy()
     display_df.columns = ["Muscle Group", "Total Volume (kg)", "Total Sets"]
     display_df["Muscle Group"] = display_df["Muscle Group"].str.title()
-    st.dataframe(display_df, use_container_width=True, hide_index=True)
+    st.dataframe(display_df, width="stretch", hide_index=True)
 
 
 # ── TAB 3: Progression ────────────────────────────────────────────────────────
@@ -276,7 +276,7 @@ with tab3:
             yaxis_title="Weight (kg)",
             hovermode="x unified",
         )
-        st.plotly_chart(fig_prog, use_container_width=True)
+        st.plotly_chart(fig_prog, width="stretch")
 
         # Session volume — area chart
         fig_vol = go.Figure()
@@ -302,7 +302,7 @@ with tab3:
             yaxis_title="Volume (kg)",
             hovermode="x unified",
         )
-        st.plotly_chart(fig_vol, use_container_width=True)
+        st.plotly_chart(fig_vol, width="stretch")
 
 
 # ── TAB 4: Analytics ──────────────────────────────────────────────────────────
@@ -378,7 +378,7 @@ with tab4:
                   f"| R²={volume_trend['r_squared']} | {sig_label}",
             xaxis_title="Week", yaxis_title="Volume (kg)", hovermode="x unified",
         )
-        st.plotly_chart(fig_trend, use_container_width=True)
+        st.plotly_chart(fig_trend, width="stretch")
 
     st.divider()
 
@@ -411,7 +411,7 @@ with tab4:
             hover_data=["sessions", "r_squared", "p_value", "total_gain_kg"],
         )
         fig_slope.update_layout(height=max(400, len(ex_stats) * 30))
-        st.plotly_chart(fig_slope, use_container_width=True)
+        st.plotly_chart(fig_slope, width="stretch")
 
         # Detailed table
         with st.expander("Show full table"):
@@ -428,8 +428,8 @@ with tab4:
                 return colors.get(val, "")
 
             st.dataframe(
-                display_stats.style.applymap(color_trend, subset=["Trend"]),
-                use_container_width=True,
+                display_stats.style.map(color_trend, subset=["Trend"]),
+                width="stretch",
                 hide_index=True,
             )
 
@@ -459,4 +459,4 @@ with tab4:
     )
     fig_prs.update_traces(marker=dict(opacity=0.8))
     fig_prs.update_layout(showlegend=selected_pr_ex == "All")
-    st.plotly_chart(fig_prs, use_container_width=True)
+    st.plotly_chart(fig_prs, width="stretch")
