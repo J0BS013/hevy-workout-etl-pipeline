@@ -4,8 +4,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 from pathlib import Path
 
-GOLD_PATH      = Path("data/gold")
-ANALYTICS_PATH = Path("data/analytics")
+PROJECT_ROOT = Path(__file__).resolve().parent
+GOLD_PATH = PROJECT_ROOT / "data" / "gold"
+ANALYTICS_PATH = PROJECT_ROOT / "data" / "analytics"
 
 st.set_page_config(
     page_title="Hevy Workout Analytics",

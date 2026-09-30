@@ -173,6 +173,10 @@ The dashboard opens automatically at `http://localhost:8501`.
 
 The repository includes a versioned portfolio dataset in the Gold and Analytics layers, so the dashboard works immediately after dependency installation. Run `main.py` first only when replacing that sample with a fresh extraction from your own Hevy account.
 
+### Deployment
+
+The dashboard is compatible with Streamlit Community Cloud and similar Python hosting services. Use `app.py` as the entry point and install dependencies from `requirements.txt`. The published app reads the versioned Gold and Analytics Parquet datasets, so it does not require a Hevy API key or expose personal credentials. API extraction remains an optional local pipeline operation.
+
 **Run the test suite**
 ```bash
 pytest tests/ -v
