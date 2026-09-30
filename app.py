@@ -147,7 +147,7 @@ with tab1:
         y="workouts",
         title="Workouts per Week",
         labels={"week_start": "Week", "workouts": "Workouts"},
-        color_discrete_sequence=["#636EFA"],
+        color_discrete_sequence=["#4F46E5"],
     )
     fig_freq.update_layout(showlegend=False)
     st.plotly_chart(fig_freq, width="stretch")
@@ -216,15 +216,15 @@ with tab2:
             r=values,
             theta=categories,
             fill="toself",
-            fillcolor="rgba(99, 110, 250, 0.25)",
-            line=dict(color="#636EFA", width=2),
+            fillcolor="rgba(79, 70, 229, 0.18)",
+            line=dict(color="#4F46E5", width=2),
             name="Volume (kg)",
         ))
         fig_radar.update_layout(
             title="Muscle Distribution",
             polar=dict(
-                radialaxis=dict(visible=True, showticklabels=False, gridcolor="rgba(255,255,255,0.1)"),
-                angularaxis=dict(gridcolor="rgba(255,255,255,0.1)"),
+                radialaxis=dict(visible=True, showticklabels=False, gridcolor="rgba(15,23,42,0.12)"),
+                angularaxis=dict(gridcolor="rgba(15,23,42,0.12)"),
                 bgcolor="rgba(0,0,0,0)",
             ),
             showlegend=False,
@@ -266,7 +266,7 @@ with tab3:
             y=ex_df["max_weight_kg"],
             mode="lines+markers",
             name="Max Weight (kg)",
-            line=dict(color="#636EFA", width=2),
+            line=dict(color="#4F46E5", width=2),
             marker=dict(size=8),
             hovertemplate="<b>%{x|%d %b %Y}</b><br>Max: %{y} kg<extra></extra>",
         ))
@@ -286,8 +286,8 @@ with tab3:
             y=ex_df["total_volume_kg"],
             mode="lines+markers",
             fill="tozeroy",
-            fillcolor="rgba(0, 204, 150, 0.15)",
-            line=dict(color="#00CC96", width=2),
+            fillcolor="rgba(15, 143, 104, 0.14)",
+            line=dict(color="#0F8F68", width=2),
             marker=dict(size=7),
             customdata=ex_df[["total_sets", "total_reps"]].values,
             hovertemplate=(
@@ -366,12 +366,12 @@ with tab4:
         fig_trend.add_trace(go.Scatter(
             x=weekly_total["week_start"], y=weekly_total["total_volume_kg"],
             mode="lines", name="Weekly Volume",
-            line=dict(color="#636EFA", width=1.5), opacity=0.6,
+            line=dict(color="#4F46E5", width=1.5), opacity=0.6,
         ))
         fig_trend.add_trace(go.Scatter(
             x=weekly_total["week_start"], y=weekly_total["trend_line"],
             mode="lines", name="Trend (OLS)",
-            line=dict(color="#EF553B", width=2, dash="dash"),
+            line=dict(color="#D14343", width=2, dash="dash"),
         ))
         sig_label = "significant (p < 0.05)" if volume_trend["is_significant"] else "not significant"
         fig_trend.update_layout(
@@ -406,7 +406,7 @@ with tab4:
             y="exercise_title",
             orientation="h",
             color="trend",
-            color_discrete_map={"improving": "#00CC96", "declining": "#EF553B", "stable": "#636EFA"},
+            color_discrete_map={"improving": "#0F8F68", "declining": "#D14343", "stable": "#4F46E5"},
             title="Rate of Strength Gain (kg/week)",
             labels={"slope_kg_per_week": "kg / week", "exercise_title": "Exercise", "trend": "Trend"},
             hover_data=["sessions", "r_squared", "p_value", "total_gain_kg"],
@@ -425,7 +425,7 @@ with tab4:
             ]
 
             def color_trend(val):
-                colors = {"improving": "color: #00CC96", "declining": "color: #EF553B", "stable": "color: gray"}
+                colors = {"improving": "color: #0F8F68", "declining": "color: #D14343", "stable": "color: #475569"}
                 return colors.get(val, "")
 
             st.dataframe(

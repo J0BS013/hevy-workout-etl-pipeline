@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/J0BS013/hevy-workout-etl-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/J0BS013/hevy-workout-etl-pipeline/actions/workflows/ci.yml)
 
+**[Open the live demo →](https://hevy-workout-dashboard-j0bs013.streamlit.app/)**
+
 ![Hevy workout analytics dashboard](docs/assets/hevy-dashboard.png)
 
 The dashboard turns the pipeline outputs into workout-frequency, training-volume, exercise-progression, personal-record, and statistical-trend views. It reads the Gold and Analytics Parquet tables rather than calling the API directly.
